@@ -20,6 +20,26 @@
         window.mochaPhantomJS ? mochaPhantomJS.run() : mocha.run();
       });
     </script>
+    <style type="text/css">
+      .square {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+      }
+
+      .positive {
+        background-color: lightgrey;
+      }
+
+      .negative {
+        background-color: grey;
+      }
+
+      .inConflict{
+        background-color: red;
+      }
+
+    </style>
 
     <!-- source files -->
     <script src="src/Board.js"></script>
@@ -33,5 +53,6 @@
   </head>
   <body>
     <div id="mocha"></div>
+    <div id="solutions"></div>
   </body>
 </html>
