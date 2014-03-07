@@ -163,20 +163,43 @@ var findNQueensSolution = function(n){
 
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
-var countNQueensSolutions = function(n) {
-  var solutionCount = findAllNQueensSolution(n).length; //fixme
-  if(n === 0){
-    solutionCount = 1;
+var countNQueensSolutions = function(n, callback) {
+  // var solutionCount = findAllNQueensSolution(n).length; //fixme
+  // if(n === 0){
+  //   solutionCount = 1;
+  // }
+  // console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  // return solutionCount;
+  var workers = [];
+  var returns = [];
+  var totalCount = 0;
+  for(var i = 0; i < n; i++){
+    workers[i] = new Worker('/src/worker.js');
+    workers[i].postMessage([
+        n,
+        1 << i,
+        (1 << i) << 1,
+        (1 << i) >> 1,
+        1
+      ]);
+    workers[i].addEventListener('message', function(e){
+      returns.push(e.data);
+      totalCount += e.data;
+      if(returns.length === n){
+        callback(totalCount);
+        workers.forEach(function(worker){
+          worker.terminate();
+        });
+      }
+    });
   }
-  //debugger;
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+
 };
 
-//console.log(findNRooksSolution(4));
 
-window.worker = new Worker('/src/worker.js');
 
-worker.addEventListener('message', function(e) {
-  console.log('Worker said: ', e.data);
-}, false);
+// window.worker = new Worker('/src/worker.js');
+
+// worker.addEventListener('message', function(e) {
+//   console.dir(e.data);
+// }, false);
